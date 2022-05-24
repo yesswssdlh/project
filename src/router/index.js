@@ -3,9 +3,10 @@ import VueRouter from 'vue-router';
 
 // 路由懒加载
 const Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/Login.vue');
-const Menus = () => import(/* webpackChunkName: "Menus" */ '@/views/menu/Menus.vue');
+const Menu = () => import(/* webpackChunkName: "Menu" */ '@/views/menu/Menu.vue');
 const Order = () => import(/* webpackChunkName: "Order" */ '@/views/order/Order.vue');
 const Restaurant = () => import(/* webpackChunkName: "Restaurant" */ '@/views/restaurant/Restaurant.vue');
+const Error = () => import(/* webpackChunkName: "Error" */ '@/views/error/Error.vue');
 
 Vue.use(VueRouter);
 
@@ -28,15 +29,21 @@ const routes = [
   },
   // 菜单页面路由对象
   {
-    path: '/menus',
-    name: 'menus',
-    component: Menus,
+    path: '/menu',
+    name: 'menu',
+    component: Menu,
   },
   // 订单页面路由对象
   {
     path: '/order',
     name: 'order',
     component: Order,
+  },
+  // 错误页面路由对象
+  {
+    path: '/*',
+    name: 'error',
+    component: Error,
   },
 
 ];
