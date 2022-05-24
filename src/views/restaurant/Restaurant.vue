@@ -1,16 +1,15 @@
 <template>
   <div>
-    <router-view />
+    我是主菜单页面
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
-
+  name: 'Restaurant',
 };
 </script>
 
-<style>
+<style scoped lang='scss'>
 
 </style>

@@ -1,23 +1,44 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import HomeView from '../views/HomeView.vue';
+
+// 路由懒加载
+const Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/Login.vue');
+const Menus = () => import(/* webpackChunkName: "Menus" */ '@/views/menu/Menus.vue');
+const Order = () => import(/* webpackChunkName: "Order" */ '@/views/order/Order.vue');
+const Restaurant = () => import(/* webpackChunkName: "Restaurant" */ '@/views/restaurant/Restaurant.vue');
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView,
+    redirect: '/login',
   },
+  // 登录页面路由对象
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue'),
+    path: '/login',
+    name: 'login',
+    component: Login,
   },
+  // 餐馆页面路由对象
+  {
+    path: '/restaurant',
+    name: 'restaurant',
+    component: Restaurant,
+  },
+  // 菜单页面路由对象
+  {
+    path: '/menus',
+    name: 'menus',
+    component: Menus,
+  },
+  // 订单页面路由对象
+  {
+    path: '/order',
+    name: 'order',
+    component: Order,
+  },
+
 ];
 
 const router = new VueRouter({

@@ -1,16 +1,15 @@
 <template>
   <div>
-    <router-view />
+    我是菜单页
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
-
+  name: 'Menus',
 };
 </script>
 
-<style>
+<style lang='scss' scoped>
 
 </style>
