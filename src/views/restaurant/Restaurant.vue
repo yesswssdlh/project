@@ -1,6 +1,8 @@
 <template>
   <div>
-    我是主菜单页面
+    <div>
+      我是主菜单页面
+    </div>
   </div>
 </template>
 

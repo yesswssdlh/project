@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+// import { localStorageGet } from '@/common/utils';
 
 // 路由懒加载
 const Login = () => import(/* webpackChunkName: "Login" */ '@/views/login/Login.vue');
@@ -45,7 +46,6 @@ const routes = [
     name: 'error',
     component: Error,
   },
-
 ];
 
 const router = new VueRouter({
@@ -53,5 +53,13 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+// router.beforeEach((to, from, next) => {
+//   const user = localStorageGet('user');
+//   // 如果有用户信息且去的是登录页面，跳转到restaurant
+//   if (user && to.path === '/login') {
+//     next('/restaurant');
+//   }
+// });
 
 export default router;

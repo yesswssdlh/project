@@ -8,6 +8,6 @@ export async function userLogin(data) {
 
 // 注册请求
 export async function userRegister(data) {
-  const result = await request.post('/api/user/login', data);
+  const result = await request.post('/api/user/register', data);
   return result;
 }
