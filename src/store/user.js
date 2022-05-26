@@ -1,6 +1,8 @@
+import { localStorageGet } from '@/common/utils';
+
 export default {
   state: {
-    user: '',
+    user: localStorageGet('user') || {},
   },
   getters: {
   },

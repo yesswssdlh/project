@@ -1,9 +1,12 @@
 <template>
   <div>
-    <div class="container">
+    <div
+      v-if="isShow"
+      class="container"
+    >
       <div class="container-box">
         <div class="container-box-word">
-          123222222222222
+          {{ message }}
         </div>
         <div class="container-box-btn">
           <button @click="closeError">
@@ -16,12 +19,22 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 export default {
+  computed: {
+    ...mapState({
+      isShow: (state) => state.errorAlert.isShow,
+      message: (state) => state.errorAlert.message,
+    }),
+  },
   methods: {
+    ...mapMutations(['hideModal']),
     closeError() {
-      this.$emit('closeError', true);
+      this.hideModal();
     },
   },
+
 };
 </script>
 

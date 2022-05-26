@@ -13,13 +13,13 @@
         src="@/assets/profile-icon.png"
         alt=""
         class="img-right"
-        @click="openBox"
+        @click.stop="openBox"
       >
     </div>
     <!-- 框体 -->
     <div
       v-show="boxFlag"
-      ref="boxRef"
+      ref="modall"
       class="container-box"
     >
       <!-- 历史订单 -->
@@ -88,10 +88,6 @@ export default {
       user: (state) => state.user.user,
     }),
   },
-  // 获取真实DOM
-  mounted() {
-    console.log(this.$refs.boxRef);
-  },
   methods: {
     ...mapMutations(['quitUserLogin']),
     // 点击左侧tasty图标跳转到restaurant
@@ -100,7 +96,9 @@ export default {
     },
     // 点击右边person图标，展不展示框体
     openBox() {
-      this.boxFlag = !this.boxFlag;
+      this.boxFlag = true;
+      // 全文档监听click事件
+      document.addEventListener('click', this.addListener);
       // 如果用户登录了，根据在什么页面判断是否有历史订单和登出按钮
       // 登录之后再进入登录页面是进不去的，路由守卫跳转到其他页面
       if (this.user) {
@@ -118,8 +116,16 @@ export default {
         this.loginFlag = true;
       }
     },
+    // 被监听的事件，控制点击空白关闭框体
+    addListener(e) {
+      if (this.$refs.modall && !this.$refs.modall.contains(e.target)) {
+        this.boxFlag = false;
+      }
+    },
     // 点击登录跳转到登录页面
     goLogin() {
+      this.boxFlag = false;
+      this.loginFlag = false;
       this.$router.push('/login');
     },
     // 点击登录跳转到订单页面
@@ -128,6 +134,10 @@ export default {
     },
     // 点击登出按钮，退出登录，清空全局管理和localstorage中的所有信息
     quitLogin() {
+      this.OrderFlag = false;
+      this.loginFlag = true;
+      this.quitFlag = false;
+      this.boxFlag = true;
       this.quitUserLogin('');
       localStorageSet('user', '');
     },

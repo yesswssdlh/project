@@ -4,7 +4,7 @@
     <headerView />
     <router-view />
     <!-- 全局错误提示信息 -->
-    <errorAlert v-if="false" />
+    <errorAlert />
     <!-- 全局loading -->
     <loadingView />
   </div>

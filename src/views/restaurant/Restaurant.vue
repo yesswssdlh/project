@@ -1,14 +1,22 @@
 <template>
   <div>
     <div>
-      我是主菜单页面
+      所有餐馆
+    </div>
+    <div>
+      <restaurantItem />
     </div>
   </div>
 </template>
 
 <script>
+import restaurantItem from '@/components/restaurant/restaurantItem.vue';
+
 export default {
   name: 'Restaurant',
+  components: {
+    restaurantItem,
+  },
 };
 </script>
 

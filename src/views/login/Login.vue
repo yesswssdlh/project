@@ -39,7 +39,7 @@
           <div>
             <button
               class="normal-btn sign-up-btn"
-              @click="openRegist"
+              @click.stop="openRegist"
             >
               注册
             </button>
@@ -51,7 +51,10 @@
         v-if="registFlag"
         class="regist"
       >
-        <div class="regist-box">
+        <div
+          ref="modal"
+          class="regist-box"
+        >
           <div class="regist-input">
             <div class="regist-word">
               用户名
@@ -100,9 +103,11 @@
 </template>
 
 <script>
-import { userRegister } from '@/api/user';
+import { userRegister, userLogin } from '@/api/user';
 import encode from '@/common/crypto';
-// import LoginError from '@/components/login/LoginError.vue';
+import { mapMutations } from 'vuex';
+import { localStorageSet } from '@/common/utils';
+// import CustomError from '@/common/error';
 
 export default {
   name: 'Login',
@@ -123,28 +128,56 @@ export default {
     };
   },
   methods: {
-    toRestaurant() {
+    ...mapMutations(['showLoading', 'hideLoading', 'showModal', 'quitUserLogin']),
+    // 登录
+    async toRestaurant() {
       // 非空验证
       if (this.username && this.password) {
         // 用户名检测
         if (this.verifyUsername(this.username)) {
           // 密码检测
-          if (this.verifyUsername(this.password)) {
+          if (this.verifyPassword(this.password)) {
+            // 登录请求
+            await userLogin({
+              username: encode(this.username),
+              password: encode(this.password),
+            });
+            // 用户信息存入localStorage
+            localStorageSet('user', {
+              username: encode(this.username),
+              password: encode(this.password),
+            });
+            // 用户信息存入vuex的user中
+            this.quitUserLogin({
+              username: encode(this.username),
+              password: encode(this.password),
+            });
             // 密码正确跳转到restaurant页面
             this.$router.push('/restaurant');
           } else {
             // 密码错误，清空密码
             this.password = '';
+            this.showModal('输入的密码不符合要求，至少6位，至少1个大写字母，1个小写字母，1个数字，1个特殊符号。');
           }
         } else {
           // 用户名错误
-          console.log(1);
+          this.showModal('请输入正确的用户名，4到16位，字母，数字，下划线，减号。');
         }
+      } else {
+        this.showModal('请输入正确的用户名，4到16位，字母，数字，下划线，减号。');
       }
     },
     // 点击打开注册框
     openRegist() {
       this.registFlag = true;
+      // 全文档监听click事件
+      document.addEventListener('click', this.addListener);
+    },
+    // 被监听的事件，控制点击空白关闭框体
+    addListener(e) {
+      if (this.$refs.modal && !this.$refs.modal.contains(e.target)) {
+        this.registFlag = false;
+      }
     },
     // 注册框-注册方法
     async registBtn() {
@@ -152,35 +185,50 @@ export default {
         // 用户名检测
         if (this.verifyUsername(this.registUsername)) {
           // 密码检测
-          if (this.verifyUsername(this.registPassword)) {
+          if (this.verifyPassword(this.registPassword)) {
             // 密码正确，验证两次输入是否相等
             if (this.registPassword === this.confirmPassword) {
               try {
+                // 打开loading
+                this.showLoading();
+                // 发送用户注册请求
                 await userRegister({
                   username: encode(this.registUsername),
                   password: encode(this.registPassword),
                 });
+                // 关闭注册框
+                this.registFlag = false;
+                // 注册成功提示信息
+                this.showModal('注册成功。');
               } catch (error) {
-                console.log(error.message);
+                console.log(error);
+                this.showModal(error.message);
+              } finally {
+                // 关闭loading
+                this.hideLoading();
               }
             } else {
               // 两次输入不等
-              console.log(2);
+              this.confirmPassword = '';
+              this.showModal('两次输入的密码不同，请重新输入。');
             }
           } else {
             // 密码错误，清空密码
-            this.password = '';
+            this.registPassword = '';
+            this.showModal('请输入正确的密码，密码要求为至少6位，至少1个大写字母，1个小写字母，1个数字，1个特殊符号。');
           }
         } else {
           // 用户名错误
-          console.log(1);
+          this.showModal('请输入正确的用户名，4到16位，字母，数字，下划线，减号。');
         }
+      } else {
+        this.showModal('请输入正确的用户名，4到16位，字母，数字，下划线，减号。');
       }
     },
     // 验证用户名
     verifyUsername(username) {
       const regName = /^[a-zA-Z0-9_-]{4,16}$/;
-      if (regName.tset(username)) {
+      if (regName.test(username)) {
         return true;
       }
       return false;
