@@ -107,6 +107,7 @@ import { userRegister, userLogin } from '@/api/user';
 import encode from '@/common/crypto';
 import { mapMutations } from 'vuex';
 import { localStorageSet } from '@/common/utils';
+import i18n from '@/locales';
 // import CustomError from '@/common/error';
 
 export default {
@@ -137,34 +138,38 @@ export default {
         if (this.verifyUsername(this.username)) {
           // 密码检测
           if (this.verifyPassword(this.password)) {
-            // 登录请求
-            await userLogin({
-              username: encode(this.username),
-              password: encode(this.password),
-            });
-            // 用户信息存入localStorage
-            localStorageSet('user', {
-              username: encode(this.username),
-              password: encode(this.password),
-            });
-            // 用户信息存入vuex的user中
-            this.quitUserLogin({
-              username: encode(this.username),
-              password: encode(this.password),
-            });
-            // 密码正确跳转到restaurant页面
-            this.$router.push('/restaurant');
+            try {
+              // 登录请求
+              await userLogin({
+                username: encode(this.username),
+                password: encode(this.password),
+              });
+              // 用户信息存入localStorage
+              localStorageSet('user', {
+                username: encode(this.username),
+                password: encode(this.password),
+              });
+              // 用户信息存入vuex的user中
+              this.quitUserLogin({
+                username: encode(this.username),
+                password: encode(this.password),
+              });
+              // 密码正确跳转到restaurant页面
+              this.$router.push('/restaurant');
+            } catch (error) {
+              this.showModal(error.message);
+            }
           } else {
             // 密码错误，清空密码
             this.password = '';
-            this.showModal('输入的密码不符合要求，至少6位，至少1个大写字母，1个小写字母，1个数字，1个特殊符号。');
+            this.showModal(i18n.t('login.error.password'));
           }
         } else {
           // 用户名错误
-          this.showModal('请输入正确的用户名，4到16位，字母，数字，下划线，减号。');
+          this.showModal(i18n.t('login.error.name'));
         }
       } else {
-        this.showModal('请输入正确的用户名，4到16位，字母，数字，下划线，减号。');
+        this.showModal(i18n.t('login.error.name'));
       }
     },
     // 点击打开注册框
@@ -202,6 +207,7 @@ export default {
                 this.showModal('注册成功。');
               } catch (error) {
                 console.log(error);
+                // 请求失败
                 this.showModal(error.message);
               } finally {
                 // 关闭loading
