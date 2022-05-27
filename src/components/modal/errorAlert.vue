@@ -10,7 +10,7 @@
         </div>
         <div class="container-box-btn">
           <button @click="closeError">
-            关闭
+            {{ $t( "close") }}
           </button>
         </div>
       </div>

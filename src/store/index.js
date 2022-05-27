@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import user from '@/store/user';
 import loading from '@/store/loading';
 import errorAlert from '@/store/errorAlert';
+import lang from '@/store/lang';
 
 Vue.use(Vuex);
 
@@ -20,5 +21,6 @@ export default new Vuex.Store({
     user,
     loading,
     errorAlert,
+    lang,
   },
 });

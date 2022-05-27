@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- 头部 -->
     <div class="container">
       <!-- header左边图片 -->
       <img
@@ -29,7 +30,7 @@
           class="box-item box-item-history"
           @click="goOrder"
         >
-          历史订单
+          {{ $t("order.title") }}
         </button>
       </div>
       <!-- 登录 -->
@@ -39,15 +40,23 @@
           class="box-item"
           @click="goLogin"
         >
-          登录
+          {{ $t("login.login") }}
         </button>
       </div>
       <!-- 中英切换 -->
       <div class="box-item-language">
-        <div class="box-item-language-word">
+        <!-- 中文 -->
+        <div
+          :class="['box-item-language-word',{smallBtn:btnFlag}]"
+          @click="confirmLang('zh-CN')"
+        >
           中
         </div>
-        <div class="box-item-language-word">
+        <!-- 英文 -->
+        <div
+          :class="['box-item-language-word',{smallBtn: !btnFlag}]"
+          @click="confirmLang('en-US')"
+        >
           En
         </div>
       </div>
@@ -58,7 +67,7 @@
           class="box-item"
           @click="quitLogin"
         >
-          登出
+          {{ $t("logout") }}
         </button>
       </div>
     </div>
@@ -66,7 +75,7 @@
 </template>
 
 <script>
-import { localStorageSet } from '@/common/utils';
+import { localStorageSet, localStorageGet } from '@/common/utils';
 // vuex
 import { mapMutations, mapState } from 'vuex';
 
@@ -81,6 +90,8 @@ export default {
       loginFlag: false,
       // 登出
       quitFlag: false,
+      // 控制中英文按钮颜色
+      btnFlag: localStorageGet('lang') === 'zh-CN',
     };
   },
   computed: {
@@ -89,9 +100,21 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations(['quitUserLogin']),
+    ...mapMutations(['quitUserLogin', 'changeLang']),
+    // 控制中英文按钮颜色
+    confirmLang(v) {
+      if (v === 'zh-CN') {
+        this.btnFlag = true;
+      } else {
+        this.btnFlag = false;
+      }
+      localStorageSet('lang', v);
+      this.$i18n.locale = v;
+      this.changeLang({ lang: v });
+    },
     // 点击左侧tasty图标跳转到restaurant
     goRestaurant() {
+      this.loginFlag = false;
       this.$router.push('/restaurant');
     },
     // 点击右边person图标，展不展示框体
@@ -101,7 +124,8 @@ export default {
       document.addEventListener('click', this.addListener);
       // 如果用户登录了，根据在什么页面判断是否有历史订单和登出按钮
       // 登录之后再进入登录页面是进不去的，路由守卫跳转到其他页面
-      if (this.user) {
+      // 如果用户信息不为空
+      if (this.user !== '') {
         if (this.$route.path.split('/')[1] === 'order') {
           this.quitFlag = true;
           this.loginFlag = false;
@@ -130,7 +154,11 @@ export default {
     },
     // 点击登录跳转到订单页面
     goOrder() {
-      this.$router.push('/order');
+      if (this.user !== '') {
+        this.OrderFlag = false;
+        this.loginFlag = false;
+        this.$router.push('/order');
+      }
     },
     // 点击登出按钮，退出登录，清空全局管理和localstorage中的所有信息
     quitLogin() {
@@ -166,14 +194,6 @@ export default {
   margin:30px 30px 0 0;
 }
 .container-box{
-  // width: 220px;
-  // background-color: #fff;
-  // box-shadow: 0 0 8px 0 hsl(0deg 0% 68% / 50%);
-  // border-radius: 5px;
-  // padding: 22px 25px;
-  // display:flex;
-  // flex-direction: column;
-  // align-items: center;
     position: absolute;
     top: 105px;
     right: 65px;
@@ -215,6 +235,11 @@ export default {
 }
 // 历史订单背景和字体样式
 .box-item-history{
+  color: #fff;
+  background-color: #202020;
+}
+// 中英文按钮样式
+.smallBtn{
   color: #fff;
   background-color: #202020;
 }

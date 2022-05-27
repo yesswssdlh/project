@@ -5,7 +5,7 @@
       <div class="container-box">
         <div class="container-input-box">
           <div class="container-word">
-            用户名
+            {{ $t("login.username") }}
           </div>
           <div>
             <input
@@ -17,7 +17,7 @@
         </div>
         <div class="container-input-box">
           <div class="container-word">
-            密码
+            {{ $t("login.password") }}
           </div>
           <div>
             <input
@@ -33,7 +33,7 @@
               class="normal-btn login-btn"
               @click="toRestaurant"
             >
-              登录
+              {{ $t("login.login") }}
             </button>
           </div>
           <div>
@@ -41,7 +41,7 @@
               class="normal-btn sign-up-btn"
               @click.stop="openRegist"
             >
-              注册
+              {{ $t( "login.signUp") }}
             </button>
           </div>
         </div>
@@ -57,7 +57,7 @@
         >
           <div class="regist-input">
             <div class="regist-word">
-              用户名
+              {{ $t("login.username") }}
             </div><div>
               <input
                 v-model="registUsername"
@@ -68,7 +68,7 @@
           </div>
           <div class="regist-input">
             <div class="regist-word">
-              密码
+              {{ $t("login.password") }}
             </div><div>
               <input
                 v-model="registPassword"
@@ -79,7 +79,7 @@
           </div>
           <div class="regist-input">
             <div class="regist-word">
-              确认
+              {{ $t("login.confirmPassword") }}
             </div><div>
               <input
                 v-model="confirmPassword"
@@ -93,7 +93,7 @@
               class="regist-btn"
               @click="registBtn"
             >
-              注册
+              {{ $t("login.signUp") }}
             </button>
           </div>
         </div>
