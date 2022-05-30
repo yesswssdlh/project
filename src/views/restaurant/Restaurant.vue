@@ -6,7 +6,7 @@
         {{ $t("restaurant.allRestaurant") }}
       </div>
     </div>
-    <!-- 餐馆名称 -->
+    <!-- 餐馆 -->
     <div>
       <restaurantItem
         v-for="item in restaurants"
@@ -20,7 +20,7 @@
 <script>
 import _ from 'lodash';
 import moment from 'moment-timezone';
-import getRestaurant from '@/api/restaurant';
+import { getRestaurant } from '@/api/restaurant';
 import { mapMutations } from 'vuex';
 
 // * 组件
@@ -36,6 +36,7 @@ export default {
     };
   },
   created() {
+    // created发送请求获取数据
     this.loadRestaurant();
   },
   methods: {

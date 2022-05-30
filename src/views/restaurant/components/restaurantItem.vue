@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="goMenu">
     <!-- 餐馆名称 -->
     <div>
       <div class="res-name1">
@@ -64,6 +64,7 @@
 import _ from 'lodash';
 import { mapState } from 'vuex';
 import i18n from '@/locales';
+import { localStorageSet } from '@/common/utils';
 
 export default {
   props: {
@@ -143,6 +144,18 @@ export default {
     },
     foodImg3() {
       return _.get(this.restaurant, 'items[2].image.url', this.defaultItems[2].image);
+    },
+  },
+  methods: {
+    goMenu() {
+      // eslint-disable-next-line
+      const cartId = this.restaurant._id;
+      localStorageSet('id', cartId);
+      localStorageSet('restaurant', this.restaurant);
+      this.$router.push({
+        name: 'menu',
+        params: { id: cartId },
+      });
     },
   },
 };

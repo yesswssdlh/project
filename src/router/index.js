@@ -29,7 +29,7 @@ const routes = [
   },
   // 菜单页面路由对象
   {
-    path: '/menu',
+    path: '/menu/:id',
     name: 'menu',
     component: Menu,
   },
