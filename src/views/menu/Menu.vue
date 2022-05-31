@@ -9,6 +9,11 @@
         {{ tags }}
       </div>
     </div>
+    <Category
+      v-for="category in categories"
+      :key="category._id"
+      :category="category"
+    />
   </div>
 </template>
 
@@ -18,16 +23,18 @@ import i18n from '@/locales';
 import { localStorageGet } from '@/common/utils';
 import { getMenu } from '@/api/restaurant';
 import { mapState } from 'vuex';
+import Category from '@/views/menu/components/Category.vue';
 
 export default {
   name: 'Menus',
+  components: {
+    Category,
+  },
   data() {
     return {
       restaurant: localStorageGet('restaurant'),
       // 菜单的菜品分类数据
       categories: [],
-      // 所有的食物，还未分类
-      foods: [],
     };
   },
   computed: {
@@ -54,19 +61,33 @@ export default {
     async loadMenu() {
       try {
         // 发送请求获取菜单数据
-        const menu = await getMenu(localStorageGet('id'));
-        this.categories = menu.categories;
-        this.foods = menu.foods;
+        const result = await getMenu(localStorageGet('id'));
+        const { categories, foods } = result;
+
+        // ? 前端重构数据
+        categories.forEach((category) => {
+          const array = [];
+          foods.forEach((food) => {
+            // ? 此分类的食物
+            // eslint-disable-next-line no-underscore-dangle
+            if (food.category._id === category._id) {
+              array.push(food);
+            }
+          });
+
+          // eslint-disable-next-line no-param-reassign
+          category.foods = array;
+        });
+        this.categories = categories;
       } catch (error) {
         console.log(error);
       }
     },
   },
-
 };
 </script>
 
-<style lang='scss' scoped>
+<style lang="scss" scoped>
 .res-name1 {
   font-size: 30px;
   cursor: pointer;
