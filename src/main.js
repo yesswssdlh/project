@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import i18n from '@/locales/index';
+import i18n from '@/locales';
 import App from './App.vue';
 import router from './router';
 import store from './store';
